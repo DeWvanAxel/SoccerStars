@@ -52,6 +52,7 @@ function create() {
 
     sprite1 = game.add.sprite(50, 50, 'ball');
     sprite2 = game.add.sprite(50, 50, 'ball');
+    //sprite2.body.immovable = true;
 
     game.physics.ninja.enableCircle(sprite1, sprite1.width / 2);
     game.physics.ninja.enableCircle(sprite2, sprite2.width / 2);
@@ -76,7 +77,9 @@ function update() {
 
     }
 */
-    game.physics.ninja.collide(sprite1,sprite2);
+    
+    sprite1.body.circle.collideCircleVsTile(sprite2.body.circle);
+    console.log(game.physics.ninja.collide(sprite1,sprite2));
     if (cursors.left.isDown)
     {
         sprite1.body.moveLeft(20);
