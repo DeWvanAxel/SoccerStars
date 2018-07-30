@@ -3,7 +3,9 @@
     <head>
         <meta charset="UTF-8" />
         <title>hello phaser!</title>
-        <script src="//cdn.jsdelivr.net/phaser/2.5.0/phaser.min.js"></script>
+        <script src="phaser.ninja.js"></script>
+        <script src="Stone.js"></script>
+
     </head>
     <body>
 
@@ -15,23 +17,42 @@
         //  Although it will work fine with this tutorial, it's almost certainly not the most current version.
         //  Be sure to replace it with an updated version before you start experimenting with adding your own code.
 
-        var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create });
+        var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+        
 
         function preload () {
 
-            game.load.image('logo', 'phaser.png');
+            game.load.image('soepinocircle', 'sprites/soepino.png');
 
         }
+        var soepino;
 
         function create () {
 
-            var logo = game.add.sprite(game.world.centerX, game.world.centerY, 'logo');
-            logo.anchor.setTo(0.5, 0.5);
+            //var graphics = game.add.graphics(0, 0);
+            // graphics.lineStyle(2, 0xffd900, 1);
+            //graphics.beginFill(0xFF0000, 1);
+            //graphics.drawCircle(50, 50, 35);
+            // Here we tell the physics manager we system we want to use
+            game.physics.startSystem(Phaser.Physics.NINJA);
+            game.physics.ninja.gravity = 0;
+            var soepino = game.add.sprite(50,50, "soepinocircle");
+            game.physics.ninja.enableCircle(soepino, soepino.width / 2);
+            mijnsteen = new Stone(game, soepino, "Team Axel");
+
+
+            //var zichtbaar = new Circle("");        
 
         }
 
-    };
+        function update (){
+            //mijnsteen.update();
+            soepino.velocity.x += 5;
+            //soepino.render();
+            console.log(soepino.x);
+        }
 
+    };
     </script>
 
     </body>
