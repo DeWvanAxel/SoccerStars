@@ -34,7 +34,7 @@
         var platforms;
         var cursors;
         var jumpButton;
-        /*var graphics;
+        var graphics;
         var shapeSprite;
         var shapeGr;
 
@@ -50,12 +50,12 @@
             cursors = game.input.keyboard.createCursorKeys();
             jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
-            /*graphics = game.add.graphics()
+            graphics = game.add.graphics()
 
             graphics.beginFill(0x00ff00);
             graphics.drawRect(50, 50, 1200,700);
 
-            graphics.endFill();*/
+            graphics.endFill();
             
             shapeGr = game.add.graphics()
 
@@ -63,7 +63,9 @@
             shapeGr.lineStyle(10, 0xffffff, 1);
             /*graphics.lineColor(0xffffff);*/
             shapeGr.lineTo(1250,50);
-            
+            shapeGr.lineTo(1250,750);
+            shapeGr.lineTo(50,750);
+            shapeGr.lineTo(50,50);
 
             shapeGr.boundsPadding = 0;
 
