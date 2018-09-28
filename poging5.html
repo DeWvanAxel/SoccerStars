@@ -31,6 +31,7 @@
     };
 
     var game = new Phaser.Game(config);
+    var thisGame;
     var player1balls = Array();
     var player2balls = Array();
 
@@ -89,7 +90,7 @@ var ball2;
 var disk;
 
 function create() {
-
+    thisGame = this;
     this.matter.world.setBounds();
 
     scoreText = this.add.text(16, 16, 'Score: 0 - 0', { fontSize: '32px', fill: '#FFFFFF' });
@@ -125,12 +126,12 @@ function create() {
 
 
 
-
+    this.resetField = updateScoreAndReset;
 
     this.matter.world.on("collisionstart", goalCheck);
     console.log("hiero");
-    leftgoal.on("goalscored", updateScoreAndReset);
-    rightgoal.on("goalscored", updateScoreAndReset); 
+    leftgoal.on("goalscored", this.resetField);
+    rightgoal.on("goalscored", this.resetField); 
 
     timerText.on("player1StartTurn", player1Turn);
     timerText.on("player2StartTurn", player2Turn);
@@ -148,21 +149,21 @@ function player2Turn(){
 }
 
 function goalCheck(event){
-    console.log("ja");
+    console.log(event);
     pairs = event.pairs;
     for(var i =0; i < pairs.length; i++){
         if((pairs[i].bodyA.gameObject.name == "ball" && (pairs[i].bodyB.gameObject.name == "leftgoal" || pairs[i].bodyB.gameObject.name == "rightgoal")) || (pairs[i].bodyB.gameObject.name == "ball" && (pairs[i].bodyA.gameObject.name == "leftgoal" || pairs[i].bodyA.gameObject.name == "rightgoal"))){
             if(pairs[i].bodyA.gameObject.name == "leftgoal"){
-                pairs[i].bodyA.gameObject.emit("goalscored", {scorer: "player 2"});
+                return pairs[i].bodyA.gameObject.emit("goalscored", {scorer: "player 2", event: event});
             }
             if(pairs[i].bodyB.gameObject.name == "leftgoal"){
-                pairs[i].bodyB.gameObject.emit("goalscored", {scorer: "player 2"});
+                return pairs[i].bodyB.gameObject.emit("goalscored", {scorer: "player 2", event: event});
             }
             if(pairs[i].bodyA.gameObject.name == "rightgoal"){
-                pairs[i].bodyA.gameObject.emit("goalscored", {scorer: "player 1"});
+                return pairs[i].bodyA.gameObject.emit("goalscored", {scorer: "player 1", event: event});
             }
             if(pairs[i].bodyB.gameObject.name == "rightgoal"){
-                pairs[i].bodyB.gameObject.emit("goalscored", {scorer: "player 1"});
+                return pairs[i].bodyB.gameObject.emit("goalscored", {scorer: "player 1", event: event});
             }
         }
     }
@@ -186,7 +187,7 @@ function updateScoreAndReset(scorer){
         player2balls[i].setX(-1000+ i *80).setVelocity(0,0);
         player2balls[i].setY(-1000);
     }
-    //ball.setVelocity(0,0).setX(-100).setY(-100);
+    
     for (var i = 0; i < player1balls.length; i++) {
         player1balls[i].setX(xOf1[i]);
         player1balls[i].setY(yOf1[i]).setVelocity(0,0);
@@ -195,10 +196,13 @@ function updateScoreAndReset(scorer){
         player2balls[i].setX(xOf2[i]);
         player2balls[i].setY(yOf2[i]).setVelocity(0,0);
     }
-    console.log(ball.body.speed);
+    console.log(this);
+    ball.destroy();
+    ball = thisGame.matter.add.image(600,400, 'football').setBody({type:"circle", radius:20}).setName("ball");
+
     /*
     setTimeout(function(){return},200)*/
-    //ball.setVelocity(0,0).setX(600).setY(300);
+    //ball = .setVelocity(0,0).setX(600).setY(300);
     console.log(ball.body.speed);
 }
 
