@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>hello phaser!</title>
+        <script src="phaser.min.js"></script>
+
+    </head>
+    <body>
+
+
+    <script type="text/javascript">
+
+
+
+  var config = {
+    type: Phaser.AUTO,
+    width: 1200,
+    height: 800,
+    physics: {
+        default: 'matter',
+        matter: {
+            gravity: { y: 0 },
+            //frictionAir : 0.0175,
+            debug: true
+        }
+    },
+    scene: {
+        preload: preload,
+        create: create,
+        update: update
+    }
+    };
+
+    var game = new Phaser.Game(config);
+
+function preload() {
+    console.log("preload");
+    this.load.image('soepino', 'sprites/soepino.png');
+    this.load.image('ambrosius', 'sprites/ambrosius.png');
+    this.load.image('football', 'sprites/football.png');
+
+    this.load.image('topwall', 'sprites/tb.png');
+    this.load.image('bottomwall', 'sprites/tb.png');
+    this.load.image('leftwall', 'sprites/lr.png');
+    this.load.image('rightwall', 'sprites/lr.png');
+    this.load.image('leftgoal', 'sprites/goal.png');
+    this.load.image('rightgoal', 'sprites/goal.png');
+
+    //game.load.image('disk', 'sprites/soepino.png');
+
+}
+
+var ball1;
+var ball2;
+var disk;
+
+function create() {
+
+    this.matter.world.setBounds();
+    console.log("in create");
+    topwall = this.matter.add.image(600,75, 'topwall').setStatic(true);
+    lefttopwall = this.matter.add.image(125,200, 'leftwall').setStatic(true);
+    righttopwall = this.matter.add.image(1075,200, 'rightwall').setStatic(true);
+    leftbottomwall = this.matter.add.image(125,600, 'leftwall').setStatic(true);
+    rightbottomwall = this.matter.add.image(1075,600, 'rightwall').setStatic(true);
+    bottomwall = this.matter.add.image(600,725, 'bottomwall').setStatic(true);
+    leftgoal = this.matter.add.image(112,400, 'leftgoal').setStatic(true).setName("leftgoal");
+    rightgoal = this.matter.add.image(1088,400, 'rightgoal').setStatic(true).setName("rightgoal");
+
+    bottomwall.setBounce(0.1);
+    topwall.setBounce(0.1);
+    leftbottomwall.setBounce(0.1);
+    rightbottomwall.setBounce(0.1);
+    lefttopwall.setBounce(0.1);
+    righttopwall.setBounce(0.1);
+
+    ball = this.matter.add.image(800,400, 'football').setBody({type:"circle", radius:20}).setName("ball");
+    player1 = this.matter.add.image(300,400, 'soepino').setBody({type:"circle", radius:37}).setVelocity(15,0);
+    
+    player1.setBounce(0.7);
+    player1.setFrictionAir(0.0175); // and this setting!
+    ball.setBounce(0.7);
+    ball.setFrictionAir(0.0175); // and this setting!
+    
+
+
+    this.matter.world.on("collisionstart", checkForGoals);
+    leftgoal.on("goalscored", updateScoreAndReset);
+    rightgoal.on("goalscored", updateScoreAndReset);
+
+}
+
+function update () {
+
+
+    //game.physics.arcade.collide(ball1, disk);
+    //game.physics.arcade.collide(ball2, disk);
+    
+}
+
+ function checkForGoals(event){
+    console.log(event);
+    pairs = event.pairs;
+    for(var i =0; i < pairs.length; i++){
+        console.log(pairs[i].bodyA.gameObject.name, pairs[i].bodyB.gameObject.name);
+        if((pairs[i].bodyA.gameObject.name == "ball" && (pairs[i].bodyB.gameObject.name == "leftgoal" || pairs[i].bodyB.gameObject.name == "rightgoal")) || (pairs[i].bodyB.gameObject.name == "ball" && (pairs[i].bodyA.gameObject.name == "leftgoal" || pairs[i].bodyA.gameObject.name == "rightgoal"))){
+            console.log("Scored a goal!!!");
+            if(pairs[i].bodyA.gameObject.name == "leftgoal"){
+                pairs[i].bodyA.gameObject.emit("goalscored", {scorer: "player 2"});
+            }
+            if(pairs[i].bodyB.gameObject.name == "leftgoal"){
+                pairs[i].bodyB.gameObject.emit("goalscored", {scorer: "player 2"});
+            }
+            if(pairs[i].bodyA.gameObject.name == "rightgoal"){
+                pairs[i].bodyA.gameObject.emit("goalscored", {scorer: "player 1"});
+            }
+            if(pairs[i].bodyB.gameObject.name == "rightgoal"){
+                pairs[i].bodyB.gameObject.emit("goalscored", {scorer: "player 1"});
+            }
+        }
+    }
+
+
+}
+
+function updateScoreAndReset(scorer){
+    console.log(scorer, "oh ja, custom eventje!!!");
+}
+
+    </script>
+
+    </body>
+</html>
