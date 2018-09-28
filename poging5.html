@@ -34,8 +34,11 @@
     var player1balls = Array();
     var player2balls = Array();
 
+    var scoreLeft = 0;
+    var scoreRight = 0;
+    var scoreText;
+
 function preload() {
-    console.log("preload");
     this.load.image('soepino', 'sprites/soepino.png');
     this.load.image('ambrosius', 'sprites/ambrosius.png');
     this.load.image('football', 'sprites/football.png');
@@ -61,12 +64,11 @@ function createBalls(playerballs, image, amountBalls,game,xOf, yOf) {
 }
 
 function shoot(playerballs, playerNumber, angle, speed){
-    console.log(playerballs[playerNumber]);
     if (speed > 15) {
         speed = 15
     }
     if (speed < 0) {
-        speed = 0.1
+        speed = 0
     }
     x = Math.cos(angle * Math.PI/180) * speed;
     y = Math.sin(angle * Math.PI/180) * speed;
@@ -80,7 +82,9 @@ var disk;
 function create() {
 
     this.matter.world.setBounds();
-    console.log("in create");
+
+    scoreText = this.add.text(16, 16, 'Score: 0 - 0', { fontSize: '32px', fill: '#FFFFFF' });
+
 
     // CREATE WORLD
     topwall = this.matter.add.image(600,75, 'topwall').setStatic(true);
@@ -104,7 +108,10 @@ function create() {
     var yOf2 = [400,275,525,325,475];
     player2balls = createBalls(player2balls, 'ambrosius', 5, this, xOf2, yOf2);
 
-    shoot(player2balls, 1, 45, 900);    
+    var [playerNumber,angle,speed] = play(ball, player1balls, player2balls, scoreRight, scoreLeft, "human")
+    shoot(player2balls, playerNumber, angle, speed)
+
+
 
 
     this.matter.world.on("collisionstart", checkForGoals);
@@ -114,12 +121,9 @@ function create() {
 }
 
 function checkForGoals(event){
-    console.log(event);
     pairs = event.pairs;
     for(var i =0; i < pairs.length; i++){
-        console.log(pairs[i].bodyA.gameObject.name, pairs[i].bodyB.gameObject.name);
         if((pairs[i].bodyA.gameObject.name == "ball" && (pairs[i].bodyB.gameObject.name == "leftgoal" || pairs[i].bodyB.gameObject.name == "rightgoal")) || (pairs[i].bodyB.gameObject.name == "ball" && (pairs[i].bodyA.gameObject.name == "leftgoal" || pairs[i].bodyA.gameObject.name == "rightgoal"))){
-            console.log("Scored a goal!!!");
             if(pairs[i].bodyA.gameObject.name == "leftgoal"){
                 pairs[i].bodyA.gameObject.emit("goalscored", {scorer: "player 2"});
             }
@@ -139,7 +143,13 @@ function checkForGoals(event){
 }
 
 function updateScoreAndReset(scorer){
-    console.log(scorer, "oh ja, custom eventje!!!");
+    if (scorer == "player 1") {
+        scoreLeft += 1
+    }
+    else {
+        scoreRight += 1
+    }
+    scoreText.setText('Score: ' + scoreLeft + " - " + scoreRight);
 }
 
 function update () {
@@ -151,13 +161,29 @@ function update () {
 }
 
  function checkForGoals(pairs){
-    console.log(pairs);
+    //console.log(pairs);
     //if(object1.body.collisionFilter.category == goals){
     //    console.log("GOOOOOAAAAAAL!!!");
     //}
 
 
 }
+
+function play(ball, player1balls, player2balls, scoreRight, scoreLeft, settings){
+    if (settings == "human") {
+        playerNumber =1
+        angle = 30
+        speed = 3
+    } else {
+        playerNumber = 2
+        angle = 70
+        speed = 12
+    }
+    
+    return [playerNumber,angle,speed]
+}
+
+
 
     </script>
 
