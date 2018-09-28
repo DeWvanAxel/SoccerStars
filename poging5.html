@@ -55,9 +55,6 @@ function preload() {
     this.load.image('rightwall', 'sprites/lr.png');
     this.load.image('leftgoal', 'sprites/goal.png');
     this.load.image('rightgoal', 'sprites/goal.png');
-
-    //game.load.image('disk', 'sprites/soepino.png');
-
 }
 
 function createBalls(playerballs, image, amountBalls,game,xOf, yOf) {
@@ -129,7 +126,6 @@ function create() {
     this.resetField = updateScoreAndReset;
 
     this.matter.world.on("collisionstart", goalCheck);
-    console.log("hiero");
     leftgoal.on("goalscored", this.resetField);
     rightgoal.on("goalscored", this.resetField); 
 
@@ -139,17 +135,16 @@ function create() {
 }
 
 function player1Turn(){
-    var [playerNumber,angle,speed] = play(ball, player1balls, player2balls, scoreRight, scoreLeft, "human");
+    var [playerNumber,angle,speed] = play(ball, player1balls, player2balls, scoreRight, scoreLeft, "human", "player 1");
     shoot(player1balls, playerNumber, angle, speed);
 }
 
 function player2Turn(){
-    var [playerNumber,angle,speed] = play(ball, player1balls, player2balls, scoreRight, scoreLeft, "ai");
+    var [playerNumber,angle,speed] = play(ball, player1balls, player2balls, scoreRight, scoreLeft, "ai", "player 2");
     shoot(player2balls, playerNumber, angle, speed);
 }
 
 function goalCheck(event){
-    console.log(event);
     pairs = event.pairs;
     for(var i =0; i < pairs.length; i++){
         if((pairs[i].bodyA.gameObject.name == "ball" && (pairs[i].bodyB.gameObject.name == "leftgoal" || pairs[i].bodyB.gameObject.name == "rightgoal")) || (pairs[i].bodyB.gameObject.name == "ball" && (pairs[i].bodyA.gameObject.name == "leftgoal" || pairs[i].bodyA.gameObject.name == "rightgoal"))){
@@ -196,14 +191,9 @@ function updateScoreAndReset(scorer){
         player2balls[i].setX(xOf2[i]);
         player2balls[i].setY(yOf2[i]).setVelocity(0,0);
     }
-    console.log(this);
     ball.destroy();
     ball = thisGame.matter.add.image(600,400, 'football').setBody({type:"circle", radius:20}).setName("ball");
 
-    /*
-    setTimeout(function(){return},200)*/
-    //ball = .setVelocity(0,0).setX(600).setY(300);
-    console.log(ball.body.speed);
 }
 
 function update () {
@@ -224,22 +214,10 @@ function update () {
     }
 
     timerText.setText(Math.ceil((timerTimer - d.getTime()) / 1000) + " " + turnEventsOrder[ currentEvent]);
-
-    //game.physics.arcade.collide(ball1, disk);
-    //game.physics.arcade.collide(ball2, disk);
     
 }
 
- function checkForGoals(pairs){
-    //console.log(pairs);
-    //if(object1.body.collisionFilter.category == goals){
-    //    console.log("GOOOOOAAAAAAL!!!");
-    //}
-
-
-}
-
-function play(ball, player1balls, player2balls, scoreRight, scoreLeft, settings){
+function play(ball, player1balls, player2balls, scoreRight, scoreLeft, settings, name){
     if (settings == "human") {
         playerNumber =0;
         angle = 0;
