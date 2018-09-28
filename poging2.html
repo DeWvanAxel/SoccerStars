@@ -60,6 +60,7 @@ function create() {
 
     //  A little more bounce
     sprite1.body.bounce = 0.2;
+    sprite2.body.bounce - 0.2;
 
     //sprite1.body.friction = 100;
 
@@ -78,7 +79,7 @@ function update() {
     }
 */
     
-    sprite1.body.circle.collideCircleVsTile(sprite2.body.circle);
+    //game.world.collide(sprite1.body,sprite2.body);
     console.log(game.physics.ninja.collide(sprite1,sprite2));
     if (cursors.left.isDown)
     {
