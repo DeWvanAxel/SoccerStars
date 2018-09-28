@@ -38,6 +38,11 @@
     var scoreRight = 0;
     var scoreText;
 
+    var xOf1 = [500,375,375,200,200];
+    var yOf1 = [400,275,525,325,475];
+    var xOf2 = [700,825,825,1000,1000];
+    var yOf2 = [400,275,525,325,475];
+
 function preload() {
     this.load.image('soepino', 'sprites/soepino.png');
     this.load.image('ambrosius', 'sprites/ambrosius.png');
@@ -112,12 +117,10 @@ function create() {
     currentEvent = 0;
     currentEventStarted = false;
      
-    var xOf1 = [525,375,375,200,200];
-    var yOf1 = [400,275,525,325,475];
+    
     player1balls = createBalls(player1balls, 'soepino', 5, this, xOf1, yOf1);
 
-    var xOf2 = [675,825,825,1000,1000];
-    var yOf2 = [400,275,525,325,475];
+
     player2balls = createBalls(player2balls, 'ambrosius', 5, this, xOf2, yOf2);
 
 
@@ -168,12 +171,35 @@ function goalCheck(event){
 
 function updateScoreAndReset(scorer){
     if (scorer == "player 1") {
-        scoreLeft += 1
+        scoreLeft += 1;
     }
     else {
-        scoreRight += 1
+        scoreRight += 1;
     }
     scoreText.setText('Score: ' + scoreLeft + " - " + scoreRight);
+    
+    for (var i = 0; i < player1balls.length; i++) {
+        player1balls[i].setX(-10000 + i *80).setVelocity(0,0);
+        player1balls[i].setY(-10000);
+    }
+    for (var i = 0; i < player2balls.length; i++) {
+        player2balls[i].setX(-1000+ i *80).setVelocity(0,0);
+        player2balls[i].setY(-1000);
+    }
+    //ball.setVelocity(0,0).setX(-100).setY(-100);
+    for (var i = 0; i < player1balls.length; i++) {
+        player1balls[i].setX(xOf1[i]);
+        player1balls[i].setY(yOf1[i]).setVelocity(0,0);
+    }
+    for (var i = 0; i < player2balls.length; i++) {
+        player2balls[i].setX(xOf2[i]);
+        player2balls[i].setY(yOf2[i]).setVelocity(0,0);
+    }
+    console.log(ball.body.speed);
+    /*
+    setTimeout(function(){return},200)*/
+    //ball.setVelocity(0,0).setX(600).setY(300);
+    console.log(ball.body.speed);
 }
 
 function update () {
@@ -215,9 +241,9 @@ function play(ball, player1balls, player2balls, scoreRight, scoreLeft, settings)
         angle = 0;
         speed = 15;
     } else {
-        playerNumber = 4;
-        angle = 10;
-        speed = 15;
+        playerNumber = 3;
+        angle = 24;
+        speed = 10;
     }
     
     return [playerNumber,angle,speed]
@@ -229,3 +255,4 @@ function play(ball, player1balls, player2balls, scoreRight, scoreLeft, settings)
 
     </body>
 </html>
+
