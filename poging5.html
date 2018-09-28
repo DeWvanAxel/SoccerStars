@@ -107,7 +107,38 @@ function create() {
 
 
     this.matter.world.on("collisionstart", checkForGoals);
+    leftgoal.on("goalscored", updateScoreAndReset);
+    rightgoal.on("goalscored", updateScoreAndReset); 
 
+}
+
+function checkForGoals(event){
+    console.log(event);
+    pairs = event.pairs;
+    for(var i =0; i < pairs.length; i++){
+        console.log(pairs[i].bodyA.gameObject.name, pairs[i].bodyB.gameObject.name);
+        if((pairs[i].bodyA.gameObject.name == "ball" && (pairs[i].bodyB.gameObject.name == "leftgoal" || pairs[i].bodyB.gameObject.name == "rightgoal")) || (pairs[i].bodyB.gameObject.name == "ball" && (pairs[i].bodyA.gameObject.name == "leftgoal" || pairs[i].bodyA.gameObject.name == "rightgoal"))){
+            console.log("Scored a goal!!!");
+            if(pairs[i].bodyA.gameObject.name == "leftgoal"){
+                pairs[i].bodyA.gameObject.emit("goalscored", {scorer: "player 2"});
+            }
+            if(pairs[i].bodyB.gameObject.name == "leftgoal"){
+                pairs[i].bodyB.gameObject.emit("goalscored", {scorer: "player 2"});
+            }
+            if(pairs[i].bodyA.gameObject.name == "rightgoal"){
+                pairs[i].bodyA.gameObject.emit("goalscored", {scorer: "player 1"});
+            }
+            if(pairs[i].bodyB.gameObject.name == "rightgoal"){
+                pairs[i].bodyB.gameObject.emit("goalscored", {scorer: "player 1"});
+            }
+        }
+    }
+
+
+}
+
+function updateScoreAndReset(scorer){
+    console.log(scorer, "oh ja, custom eventje!!!");
 }
 
 function update () {
