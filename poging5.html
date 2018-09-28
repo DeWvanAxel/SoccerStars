@@ -31,6 +31,8 @@
     };
 
     var game = new Phaser.Game(config);
+    var player1balls = Array();
+    var player2balls = Array();
 
 function preload() {
     console.log("preload");
@@ -93,12 +95,11 @@ function create() {
     // CREATE PLAYERS
     ball = this.matter.add.image(600,400, 'football').setBody({type:"circle", radius:20});
 
-    var player1balls = Array(); 
+     
     var xOf1 = [525,375,375,200,200];
     var yOf1 = [400,275,525,325,475];
     player1balls = createBalls(player1balls, 'soepino', 5, this, xOf1, yOf1);
 
-    var player2balls = Array();
     var xOf2 = [675,825,825,1000,1000];
     var yOf2 = [400,275,525,325,475];
     player2balls = createBalls(player2balls, 'ambrosius', 5, this, xOf2, yOf2);
