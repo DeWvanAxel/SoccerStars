@@ -165,28 +165,6 @@ function goalCheck(event){
     }
 }
 
-function checkForGoals(event){
-    console.log("CHECKING FOR GOALS!!!");
-    /*pairs = event.pairs;
-    for(var i =0; i < pairs.length; i++){
-        if((pairs[i].bodyA.gameObject.name == "ball" && (pairs[i].bodyB.gameObject.name == "leftgoal" || pairs[i].bodyB.gameObject.name == "rightgoal")) || (pairs[i].bodyB.gameObject.name == "ball" && (pairs[i].bodyA.gameObject.name == "leftgoal" || pairs[i].bodyA.gameObject.name == "rightgoal"))){
-            if(pairs[i].bodyA.gameObject.name == "leftgoal"){
-                pairs[i].bodyA.gameObject.emit("goalscored", {scorer: "player 2"});
-            }
-            if(pairs[i].bodyB.gameObject.name == "leftgoal"){
-                pairs[i].bodyB.gameObject.emit("goalscored", {scorer: "player 2"});
-            }
-            if(pairs[i].bodyA.gameObject.name == "rightgoal"){
-                pairs[i].bodyA.gameObject.emit("goalscored", {scorer: "player 1"});
-            }
-            if(pairs[i].bodyB.gameObject.name == "rightgoal"){
-                pairs[i].bodyB.gameObject.emit("goalscored", {scorer: "player 1"});
-            }
-        }
-    }*/
-
-
-}
 
 function updateScoreAndReset(scorer){
     if (scorer == "player 1") {
