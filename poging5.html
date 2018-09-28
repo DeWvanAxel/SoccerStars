@@ -124,7 +124,8 @@ function create() {
 
 
 
-    this.matter.world.on("collisionstart", checkForGoals);
+    this.matter.world.on("collisionstart", goalCheck);
+    console.log("hiero");
     leftgoal.on("goalscored", updateScoreAndReset);
     rightgoal.on("goalscored", updateScoreAndReset); 
 
@@ -139,11 +140,12 @@ function player1Turn(){
 }
 
 function player2Turn(){
-    var [playerNumber,angle,speed] = play(ball, player1balls, player2balls, scoreRight, scoreLeft, "human");
+    var [playerNumber,angle,speed] = play(ball, player1balls, player2balls, scoreRight, scoreLeft, "ai");
     shoot(player2balls, playerNumber, angle, speed);
 }
 
-function checkForGoals(event){
+function goalCheck(event){
+    console.log("ja");
     pairs = event.pairs;
     for(var i =0; i < pairs.length; i++){
         if((pairs[i].bodyA.gameObject.name == "ball" && (pairs[i].bodyB.gameObject.name == "leftgoal" || pairs[i].bodyB.gameObject.name == "rightgoal")) || (pairs[i].bodyB.gameObject.name == "ball" && (pairs[i].bodyA.gameObject.name == "leftgoal" || pairs[i].bodyA.gameObject.name == "rightgoal"))){
@@ -161,6 +163,27 @@ function checkForGoals(event){
             }
         }
     }
+}
+
+function checkForGoals(event){
+    console.log("CHECKING FOR GOALS!!!");
+    /*pairs = event.pairs;
+    for(var i =0; i < pairs.length; i++){
+        if((pairs[i].bodyA.gameObject.name == "ball" && (pairs[i].bodyB.gameObject.name == "leftgoal" || pairs[i].bodyB.gameObject.name == "rightgoal")) || (pairs[i].bodyB.gameObject.name == "ball" && (pairs[i].bodyA.gameObject.name == "leftgoal" || pairs[i].bodyA.gameObject.name == "rightgoal"))){
+            if(pairs[i].bodyA.gameObject.name == "leftgoal"){
+                pairs[i].bodyA.gameObject.emit("goalscored", {scorer: "player 2"});
+            }
+            if(pairs[i].bodyB.gameObject.name == "leftgoal"){
+                pairs[i].bodyB.gameObject.emit("goalscored", {scorer: "player 2"});
+            }
+            if(pairs[i].bodyA.gameObject.name == "rightgoal"){
+                pairs[i].bodyA.gameObject.emit("goalscored", {scorer: "player 1"});
+            }
+            if(pairs[i].bodyB.gameObject.name == "rightgoal"){
+                pairs[i].bodyB.gameObject.emit("goalscored", {scorer: "player 1"});
+            }
+        }
+    }*/
 
 
 }
@@ -210,13 +233,13 @@ function update () {
 
 function play(ball, player1balls, player2balls, scoreRight, scoreLeft, settings){
     if (settings == "human") {
-        playerNumber =1
-        angle = 30
-        speed = 3
+        playerNumber =0;
+        angle = 0;
+        speed = 15;
     } else {
-        playerNumber = 2
-        angle = 70
-        speed = 12
+        playerNumber = 4;
+        angle = 10;
+        speed = 15;
     }
     
     return [playerNumber,angle,speed]
