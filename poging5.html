@@ -73,6 +73,10 @@ function shoot(playerballs, playerNumber, angle, speed){
     x = Math.cos(angle * Math.PI/180) * speed;
     y = Math.sin(angle * Math.PI/180) * speed;
     playerballs[playerNumber].setVelocity(x,y);
+
+    //trigger next event in turn order.
+    currentEvent ++;
+    currentEventStarted = false;
 }
 
 var ball1;
@@ -99,6 +103,13 @@ function create() {
     // CREATE PLAYERS
     ball = this.matter.add.image(600,400, 'football').setBody({type:"circle", radius:20});
 
+    //CREATE TIMER AND TURN ORDER
+    timerText = this.add.text(500,50, "20", { font: '32px Arial', fill: '#00ff00' });
+    timerTimer = 0;
+    turnEventsOrder = ["player1StartTurn","player1ShowTurn","player2StartTurn","player2ShowTurn"];
+    turnEventsOrderIsTimed= [true, false, true, false];
+    currentEvent = 0;
+    currentEventStarted = false;
      
     var xOf1 = [525,375,375,200,200];
     var yOf1 = [400,275,525,325,475];
@@ -108,8 +119,6 @@ function create() {
     var yOf2 = [400,275,525,325,475];
     player2balls = createBalls(player2balls, 'ambrosius', 5, this, xOf2, yOf2);
 
-    var [playerNumber,angle,speed] = play(ball, player1balls, player2balls, scoreRight, scoreLeft, "human")
-    shoot(player2balls, playerNumber, angle, speed)
 
 
 
@@ -118,6 +127,19 @@ function create() {
     leftgoal.on("goalscored", updateScoreAndReset);
     rightgoal.on("goalscored", updateScoreAndReset); 
 
+    timerText.on("player1StartTurn", player1Turn);
+    timerText.on("player2StartTurn", player2Turn);
+
+}
+
+function player1Turn(){
+    var [playerNumber,angle,speed] = play(ball, player1balls, player2balls, scoreRight, scoreLeft, "human");
+    shoot(player1balls, playerNumber, angle, speed);
+}
+
+function player2Turn(){
+    var [playerNumber,angle,speed] = play(ball, player1balls, player2balls, scoreRight, scoreLeft, "human");
+    shoot(player2balls, playerNumber, angle, speed);
 }
 
 function checkForGoals(event){
@@ -154,6 +176,22 @@ function updateScoreAndReset(scorer){
 
 function update () {
 
+    var d = new Date();
+    if(currentEvent >= turnEventsOrder.length){
+        currentEvent = 0;
+    }
+    if (!currentEventStarted) {
+        
+        timerText.emit(turnEventsOrder[currentEvent]);
+        timerTimer = d.getTime() + (turnEventsOrderIsTimed[currentEvent] ? 5000 : 3500);
+        currentEventStarted = true;
+    }
+    if (timerTimer - d.getTime() < 0 ) {
+        currentEvent ++;
+        currentEventStarted = false;
+    }
+
+    timerText.setText(Math.ceil((timerTimer - d.getTime()) / 1000) + " " + turnEventsOrder[ currentEvent]);
 
     //game.physics.arcade.collide(ball1, disk);
     //game.physics.arcade.collide(ball2, disk);
