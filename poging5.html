@@ -97,11 +97,12 @@ function create() {
     leftbottomwall = this.matter.add.image(125,600, 'leftwall').setStatic(true);
     rightbottomwall = this.matter.add.image(1075,600, 'rightwall').setStatic(true);
     bottomwall = this.matter.add.image(600,725, 'bottomwall').setStatic(true);
-    leftgoal = this.matter.add.image(112,400, 'leftgoal').setStatic(true);
-    rightgoal = this.matter.add.image(1088,400, 'rightgoal').setStatic(true);
+    leftgoal = this.matter.add.image(112,400, 'leftgoal').setStatic(true).setName("leftgoal");
+    rightgoal = this.matter.add.image(1088,400, 'rightgoal').setStatic(true).setName("rightgoal");
 
     // CREATE PLAYERS
-    ball = this.matter.add.image(600,400, 'football').setBody({type:"circle", radius:20});
+    ball = this.matter.add.image(600,400, 'football').setBody({type:"circle", radius:20}).setName("ball");
+
 
     //CREATE TIMER AND TURN ORDER
     timerText = this.add.text(500,50, "20", { font: '32px Arial', fill: '#00ff00' });
