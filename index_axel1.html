@@ -3,7 +3,8 @@
     <head>
         <meta charset="UTF-8" />
         <title>hello phaser!</title>
-        <script src="phaser.ninja.js"></script>
+        <script src="//cdn.jsdelivr.net/phaser/2.5.0/phaser.min.js"></script>
+        <script src="createField.js"></script>
     </head>
     <body>
 
@@ -41,7 +42,7 @@
 
             player = game.add.sprite(1, 1, 'player');
 
-            game.physics.ninja.enable(player);
+            game.physics.arcade.enable(player);
 
             player.body.collideWorldBounds = true;
             player.body.gravity.y = 0;
@@ -49,12 +50,12 @@
             cursors = game.input.keyboard.createCursorKeys();
             jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
-            /*graphics = game.add.graphics()
+            graphics = game.add.graphics()
 
             graphics.beginFill(0x00ff00);
             graphics.drawRect(50, 50, 1200,700);
 
-            graphics.endFill();*/
+            graphics.endFill();
             
             shapeGr = game.add.graphics()
 
@@ -62,7 +63,9 @@
             shapeGr.lineStyle(10, 0xffffff, 1);
             /*graphics.lineColor(0xffffff);*/
             shapeGr.lineTo(1250,50);
-            
+            shapeGr.lineTo(1250,750);
+            shapeGr.lineTo(50,750);
+            shapeGr.lineTo(50,50);
 
             shapeGr.boundsPadding = 0;
 
@@ -73,14 +76,14 @@
             shapeSprite.addChild(shapeGr);
 
             // Enable physics on the sprite (as graphics objects cannot have bodies applied)
-            game.physics.ninja.enable(shapeSprite);       
+            game.physics.arcade.enable(shapeSprite);       
 
 
         }
 
         function update () {
 
-            game.physics.ninja.collide(player, shapeSprite);
+            game.physics.arcade.collide(player, shapeSprite);
 
             player.body.velocity.x = 0;
             player.body.velocity.y = 0;
