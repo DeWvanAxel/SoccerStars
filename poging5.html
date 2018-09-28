@@ -49,42 +49,38 @@ function preload() {
 
 }
 
+function createBalls(playerballs, image, amountBalls,game,xOf, yOf) {
+    for (var i = 0; i < amountBalls; i++) {
+        playerball = game.matter.add.image(xOf[i],yOf[i], image).setBody({type:"circle", radius:37});
+        playerball.setBounce(0.7).setFrictionAir(0.0175);
+        playerballs.push(playerball);
+    }
+    return playerballs
+}
+
+function shoot(playerballs, playerNumber, angle, speed){
+    console.log(playerballs[playerNumber]);
+    if (speed > 15) {
+        speed = 15
+    }
+    if (speed < 0) {
+        speed = 0.1
+    }
+    x = Math.cos(angle * Math.PI/180) * speed;
+    y = Math.sin(angle * Math.PI/180) * speed;
+    playerballs[playerNumber].setVelocity(x,y);
+}
+
 var ball1;
 var ball2;
 var disk;
 
 function create() {
 
-    //this.matter.world.setBounds(0, 0, 800, 600, 32, true, true, false, true);
     this.matter.world.setBounds();
-    //game.physics.startSystem(Phaser.Physics.ARCADE);
     console.log("in create");
-    //disk = game.add.sprite(80, 0, 'disk');
-    //ball1 = this.matter.add.image(300, 440, 'wizball');
-    //ball2 = this.matter.add.image(200, 340, 'wizball');
-    //ball3 = this.matter.add.sprite(300, 240, 'wizball');
-    //ball4 = this.matter.add.sprite(400, 140, 'wizball');
-    //ball5 = this.matter.add.sprite(500, 40, 'wizball');
-    //ball6 = this.matter.add.sprite(600, 140, 'wizball');
-    //ball7 = this.matter.add.sprite(700, 240, 'wizball');
-    //ball8 = this.matter.add.sprite(600, 340, 'wizball');
-    //ball9 = this.matter.add.sprite(500, 440, 'wizball');
-    //ball10 = this.matter.add.sprite(400, 340, 'wizball');
-    //ball11 = this.matter.add.sprite(300, 240, 'wizball');
-    //ball12 = this.matter.add.sprite(200, 140, 'wizball');
 
-    //leftgoal = this.matter.add.image(25,300, 'leftgoal');
-    //rightgoal = this.matter.add.image(775,300, 'rightgoal');
-    
-    /*lefttopwall =this.matter.add.rectangle(125,200,50,200);
-    leftbottomwall =this.matter.add.rectangle(125,600,50,200);
-    topwall = this.matter.add.rectangle(600,75,1000,50);
-    bottomwall = this.matter.add.rectangle(600,725,1000,50);
-    righttopwall =this.matter.add.rectangle(1075,200,50,200);
-    rightbottomwall =this.matter.add.rectangle(1075,600,50,200);
-    goal1 = this.matter.add.rectangle(125,400,5,200);
-    */
-    //topwall.setBody({width:600});
+    // CREATE WORLD
     topwall = this.matter.add.image(600,75, 'topwall').setStatic(true);
     lefttopwall = this.matter.add.image(125,200, 'leftwall').setStatic(true);
     righttopwall = this.matter.add.image(1075,200, 'rightwall').setStatic(true);
@@ -93,167 +89,22 @@ function create() {
     bottomwall = this.matter.add.image(600,725, 'bottomwall').setStatic(true);
     leftgoal = this.matter.add.image(112,400, 'leftgoal').setStatic(true);
     rightgoal = this.matter.add.image(1088,400, 'rightgoal').setStatic(true);
-    //bottomwall.setBody({width:600});
 
-    //lefttopwall.setScale(0.5);
-    //lefttopwall.
-    //leftbottomwall.setScale(0.5);
-    //righttopwall.setScale(0.5);
-    //rightbottomwall.setScale(0.5);
-
-    
-    //console.log(goal1);
-    //goal1.isStatic =  true;// = true;
-
+    // CREATE PLAYERS
     ball = this.matter.add.image(600,400, 'football').setBody({type:"circle", radius:20});
-    player1 = this.matter.add.image(300,400, 'soepino').setBody({type:"circle", radius:37});
-    player2 = this.matter.add.image(800,400, 'ambrosius').setBody({type:"circle", radius:37});
-    player1.setVelocity(20,1);
 
-    //player1.velocity.x = -200;
+    var player1balls = Array(); 
+    var xOf1 = [525,375,375,200,200];
+    var yOf1 = [400,275,525,325,475];
+    player1balls = createBalls(player1balls, 'soepino', 5, this, xOf1, yOf1);
 
-    /*walls = this.matter.world.nextCategory();
-    topwall.setCollisionCategory(walls);
-    bottomwall.setCollisionCategory(walls);
-    lefttopwall.setCollisionCategory(walls);
-    righttopwall.setCollisionCategory(walls);
-    leftbottomwall.setCollisionCategory(walls);
-    rightbottomwall.setCollisionCategory(walls);
+    var player2balls = Array();
+    var xOf2 = [675,825,825,1000,1000];
+    var yOf2 = [400,275,525,325,475];
+    player2balls = createBalls(player2balls, 'ambrosius', 5, this, xOf2, yOf2);
 
-    balls = this.matter.world.nextCategory();
-    ball1.setCollisionCategory(balls);
-    ball2.setCollisionCategory(balls);
+    shoot(player2balls, 1, 45, 900);    
 
-    goals = this.matter.world.nextCategory();
-    leftgoal.setCollisionCategory(goals);
-    rightgoal.setCollisionCategory(goals);
-    leftgoal.setSensor(true);
-    rightgoal.setSensor(true);
-
-    topwall.setStatic(true);
-    lefttopwall.setStatic(true);
-    righttopwall.setStatic(true);
-    leftbottomwall.setStatic(true);
-    rightbottomwall.setStatic(true);
-    bottomwall.setStatic(true);
-    
-    
-    console.log(ball1);
-
-    ball1.setCollidesWith([balls,walls]);
-    ball2.setCollidesWith([balls,walls]);
-*/
-    //  rect corners collide, but circles don't
-    // ball2.x = 280;
-    // ball2.y = 220;
-
-    //  circles collide
-    // ball2.x = 260;
-    // ball2.y = 140;
-
-    //  disk rect NOT collide with ball1, and is out of its bounds
-    // disk.x = 320;
-    // disk.y = 380;
-
-    //  disk rect NOT collide with ball1, but is within its bounds
-    // disk.x = 280;
-    // disk.y = 380;
-
-    //  disk rect WILL collide with ball1
-    // disk.x = 270;
-    // disk.y = 370;
-
-
-     //this.physics.arcade.enable([ball1, ball2]);
-    //game.physics.arcade.enable([disk, ball1, ball2]);
-
-    //  By default the Body is a rectangle. Let's turn it into a Circle with a radius of 45 pixels
-
-    /*//ball1.setBody({
-        type: 'circle',
-        radius: 24});
-    ball2.setBody({
-        type: 'circle',
-        radius: 24});
-    ball1.setBody({
-        type: 'circle',
-        radius: 24});
-    ball2.setBody({
-        type: 'circle',
-        radius: 24});
-    ball3.setBody({
-        type: 'circle',
-        radius: 24});
-    ball4.setBody({
-        type: 'circle',
-        radius: 24});
-    ball5.setBody({
-        type: 'circle',
-        radius: 24});
-    ball6.setBody({
-        type: 'circle',
-        radius: 24});
-    ball7.setBody({
-        type: 'circle',
-        radius: 24});
-    ball8.setBody({
-        type: 'circle',
-        radius: 24});
-    ball9.setBody({
-        type: 'circle',
-        radius: 24});
-    ball10.setBody({
-        type: 'circle',
-        radius: 24});
-    ball11.setBody({
-        type: 'circle',
-        radius: 24});
-    ball12.setBody({
-        type: 'circle',
-        radius: 24});
-    */
-
-    // ball1.body.immovable = true;
-    // ball2.body.mass = 3;
-
-    //  Set the ball to collide with the world, have gravity, bounce, and move.
-    //ball1.body.collideWorldBounds = true;
-    //ball2.body.collideWorldBounds = true;
-    //disk.body.collideWorldBounds = true;
-
-    //ball1.setBounce(0.9);
-    //ball2.setBounce(0.9);
-
-    //ball1.setVelocity(25,0);
-    //ball2.setVelocity(-10,0);
-    //ball3.setVelocity(20,-10);
-    //ball4.setVelocity(10,-10);
-    //ball5.setVelocity(-10,10);
-    //ball6.setVelocity(10,10);
-    //ball7.setVelocity(10,10);
-    //ball8.setVelocity(10,10);
-    //ball9.setVelocity(10,10);
-    //ball10.setVelocity(10,10);
-    //ball11.setVelocity(10,10);
-    //ball12.setVelocity(10,10);
-    //ball1.setDrag(20);
-    //ball2.setDrag(20);
-
-    //disk.body.bounce.set(1);
-
-    //ball1.body.gravity.y = 0;
-    //ball2.body.gravity.y = 0;
-    //disk.body.gravity.y = 100;
-
-    // ball1.body.velocity.x = 50;
-    // ball2.body.velocity.x = -50;
-
-    //ball1.body.velocity.set(150,9);
-    //ball2.body.velocity.set(-350, 20);
-    //disk.body.velocity.set(50);
-    //this.matter.add.collider(ball1, ball2, collie);
-    // game.input.onDown.add(function() { console.log(game.physics.arcade.intersects(ball1.body, ball2.body)); });
-    // game.input.onDown.add(function() { console.log(game.physics.arcade.intersects(ball1.body, disk.body)); });
 
     this.matter.world.on("collisionstart", checkForGoals);
 
