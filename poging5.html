@@ -173,7 +173,7 @@ function updateScoreAndReset(scorer){
         scoreRight += 1;
     }
     scoreText.setText('Score: ' + scoreLeft + " - " + scoreRight);
-    
+    ball.destroy();
     for (var i = 0; i < player1balls.length; i++) {
         player1balls[i].setX(-10000 + i *80).setVelocity(0,0);
         player1balls[i].setY(-10000);
@@ -191,7 +191,7 @@ function updateScoreAndReset(scorer){
         player2balls[i].setX(xOf2[i]);
         player2balls[i].setY(yOf2[i]).setVelocity(0,0);
     }
-    ball.destroy();
+    
     ball = thisGame.matter.add.image(600,400, 'football').setBody({type:"circle", radius:20}).setName("ball").setBounce(0.8).setFrictionAir(0.0175);
 
 }
