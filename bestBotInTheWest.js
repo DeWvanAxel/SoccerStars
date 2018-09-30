@@ -1,19 +1,15 @@
 function bestBotInTheWest(ball, player1balls, player2balls, scoreRight, scoreLeft, settings, name){
-	// var thrashTalk = Array("Axel is on FIRE!","Your defense is terrified","YALALALALALALA LALALA LALA","You should play in the league, in fifth division!","Max is bronze 3 material","PARK the bus!","Hier gaan mijn kinderen het nog over hebben","Het gaat om winst en doelpunten","Max, je hebt het in ieder geval geprobeerd","Je speelt zo goed als TSM op worlds","Net het Nederlands eftal Max, die verliezen ook","Voor zo'n verlies heb ik geen woorden", "Kip, ik heb je daar bij de zijlijn")
-	// console.log(thrashTalk[Math.floor(Math.random() * thrashTalk.length)])
+	var thrashTalk = Array("Axel is on FIRE!","Your defense is terrified","YALALALALALALA LALALA LALA","You should play in the league, in fifth division!","Max is bronze 3 material","PARK the bus!","Hier gaan mijn kinderen het nog over hebben","Het gaat om winst en doelpunten","Max, je hebt het in ieder geval geprobeerd","Je speelt zo goed als TSM op worlds","Net het Nederlands eftal Max, die verliezen ook","Voor zo'n verlies heb ik geen woorden", "Kip, ik heb je daar bij de zijlijn")
+	console.log(thrashTalk[Math.floor(Math.random() * thrashTalk.length)])
 	
 	var [open, angleOfHit] = openShot(ball, player1balls, player2balls,name);
-	console.log(open, angleOfHit)
 	if(open){
 		var [playerNumber,angle,speed] = shootOpen(ball, player1balls, player2balls, name, angleOfHit);
-		console.log("open")
 	}
 	else if (defenseInPlay(ball, player1balls, player2balls,name)){
 		var [playerNumber,angle,speed] = irritatingDefense(ball, player1balls, player2balls,name, angleOfHit);
-		console.log("defense")
 	} else{
 		var [playerNumber,angle,speed] = forcePlay(ball, player1balls, player2balls,name, angleOfHit)
-		console.log("force")
 	}
 	
 	return [playerNumber,angle,speed]
@@ -210,7 +206,6 @@ function irritatingDefense(ball, player1balls, player2balls,name){
 			possible.push(i)
 		}
 	}
-	console.log(possible)
 	if (possible.length >0){
 		var lowest = 10000;
 		var playerNumber = 0;
@@ -218,7 +213,6 @@ function irritatingDefense(ball, player1balls, player2balls,name){
 			if ((Math.abs(ownBalls[possible[i]].x - (leftSpace+rightSpace/2)) < lowest)){
 				playerNumber = possible[i];
 				lowest = Math.abs(ownBalls[possible[i]].x - ((leftSpace+rightSpace)/2));
-				console.log(Math.abs(ownBalls[possible[i]].x - ((leftSpace+rightSpace)/2)))
 			} 
 		}
 	} else {
