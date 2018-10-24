@@ -1,0 +1,245 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>hello phaser!</title>
+        <script src="helperfunctions.js"></script>
+        <script src="bestBotInTheWest.js"></script>
+        <script src="dummydefense.js"></script>
+
+        <script src="phaser.min.js"></script>
+
+    </head>
+    <body>
+
+    <script type="text/javascript">
+
+
+
+  var config = {
+    type: Phaser.AUTO,
+    width: 1200,
+    height: 800,
+    physics: {
+        default: 'matter',
+        matter: {
+            gravity: { y: 0 },
+            debug: true
+        }
+    },
+    scene: {
+        preload: preload,
+        create: create,
+        update: update
+    }
+    };
+
+    var game = new Phaser.Game(config);
+    var thisGame;
+    var player1balls = Array();
+    var player2balls = Array();
+
+    var scoreLeft = 0;
+    var scoreRight = 0;
+    var scoreText;
+
+    var xOf1 = [500,375,375,200,200];
+    var yOf1 = [400,275,525,325,475];
+    var xOf2 = [700,825,825,1000,1000];
+    var yOf2 = [400,275,525,325,475];
+
+function preload() {
+    this.load.image('soepino', 'sprites/soepino.png');
+    this.load.image('ambrosius', 'sprites/ambrosius.png');
+    this.load.image('football', 'sprites/football.png');
+
+    this.load.image('topwall', 'sprites/tb.png');
+    this.load.image('bottomwall', 'sprites/tb.png');
+    this.load.image('leftwall', 'sprites/lr.png');
+    this.load.image('rightwall', 'sprites/lr.png');
+    this.load.image('leftgoal', 'sprites/goal.png');
+    this.load.image('rightgoal', 'sprites/goal.png');
+}
+
+function createBalls(playerballs, image, amountBalls,game,xOf, yOf) {
+    for (var i = 0; i < amountBalls; i++) {
+        playerball = game.matter.add.image(xOf[i],yOf[i], image).setBody({type:"circle", radius:37});
+        playerball.setBounce(0.7).setFrictionAir(0.0175);
+        playerballs.push(playerball);
+    }
+    return playerballs
+}
+
+function shoot(playerballs, playerNumber, angle, speed){
+    if (speed > 15) {
+        speed = 15
+    }
+    if (speed < 0) {
+        speed = 0
+    }
+    x = Math.cos(angle * Math.PI/180) * speed;
+    y = Math.sin(angle * Math.PI/180) * speed;
+    playerballs[playerNumber].setVelocity(x,y);
+
+    //trigger next event in turn order.
+    currentEvent ++;
+    currentEventStarted = false;
+}
+
+var ball1;
+var ball2;
+var disk;
+
+function create() {
+    thisGame = this;
+    this.matter.world.setBounds();
+
+    scoreText = this.add.text(16, 16, 'Score: 0 - 0', { fontSize: '32px', fill: '#FFFFFF' });
+
+
+    // CREATE WORLD
+    topwall = this.matter.add.image(600,75, 'topwall').setStatic(true);
+    lefttopwall = this.matter.add.image(125,200, 'leftwall').setStatic(true);
+    righttopwall = this.matter.add.image(1075,200, 'rightwall').setStatic(true);
+    leftbottomwall = this.matter.add.image(125,600, 'leftwall').setStatic(true);
+    rightbottomwall = this.matter.add.image(1075,600, 'rightwall').setStatic(true);
+    bottomwall = this.matter.add.image(600,725, 'bottomwall').setStatic(true);
+    leftgoal = this.matter.add.image(112,400, 'leftgoal').setStatic(true).setName("leftgoal");
+    rightgoal = this.matter.add.image(1088,400, 'rightgoal').setStatic(true).setName("rightgoal");
+
+    // CREATE PLAYERS
+    ball = this.matter.add.image(600,400, 'football').setBody({type:"circle", radius:20}).setName("ball").setBounce(0.8).setFrictionAir(0.0175);
+    
+
+    //CREATE TIMER AND TURN ORDER
+    timerText = this.add.text(500,50, "20", { font: '32px Arial', fill: '#00ff00' });
+    timerTimer = 0;
+    turnEventsOrder = ["player1StartTurn","player1ShowTurn","player2StartTurn","player2ShowTurn"];
+    turnEventsOrderIsTimed= [true, false, true, false];
+    currentEvent = 0;
+    currentEventStarted = false;
+     
+    
+    player1balls = createBalls(player1balls, 'soepino', 5, this, xOf1, yOf1);
+
+
+    player2balls = createBalls(player2balls, 'ambrosius', 5, this, xOf2, yOf2);
+
+
+
+    this.resetField = updateScoreAndReset;
+
+    this.matter.world.on("collisionstart", goalCheck);
+    leftgoal.on("goalscored", this.resetField);
+    rightgoal.on("goalscored", this.resetField); 
+
+    timerText.on("player1StartTurn", player1Turn);
+    timerText.on("player2StartTurn", player2Turn);
+
+}
+
+function player1Turn(){
+    var [playerNumber,angle,speed] = bestBotInTheWest(ball, player1balls, player2balls, scoreRight, scoreLeft, "human", "player 1");
+    shoot(player1balls, playerNumber, angle, speed);
+}
+
+function player2Turn(){
+    var [playerNumber,angle,speed] = dummyDefensePlay(ball, player1balls, player2balls, scoreRight, scoreLeft, "ai", "player 2", false, true);
+    shoot(player2balls, playerNumber, angle, speed);
+}
+
+function goalCheck(event){
+    pairs = event.pairs;
+    for(var i =0; i < pairs.length; i++){
+        if((pairs[i].bodyA.gameObject.name == "ball" && (pairs[i].bodyB.gameObject.name == "leftgoal" || pairs[i].bodyB.gameObject.name == "rightgoal")) || (pairs[i].bodyB.gameObject.name == "ball" && (pairs[i].bodyA.gameObject.name == "leftgoal" || pairs[i].bodyA.gameObject.name == "rightgoal"))){
+            if(pairs[i].bodyA.gameObject.name == "leftgoal"){
+                return pairs[i].bodyA.gameObject.emit("goalscored", {scorer: "player 2"});
+            }
+            if(pairs[i].bodyB.gameObject.name == "leftgoal"){
+                return pairs[i].bodyB.gameObject.emit("goalscored", {scorer: "player 2"});
+            }
+            if(pairs[i].bodyA.gameObject.name == "rightgoal"){
+                return pairs[i].bodyA.gameObject.emit("goalscored", {scorer: "player 1"});
+            }
+            if(pairs[i].bodyB.gameObject.name == "rightgoal"){
+                return pairs[i].bodyB.gameObject.emit("goalscored", {scorer: "player 1"});
+            }
+        }
+    }
+}
+
+
+function updateScoreAndReset(scorer){
+    console.log(scorer, "scored. old score", scoreLeft, scoreRight);
+    if (scorer.scorer == "player 1") {
+        scoreLeft += 1;
+    }
+    else {
+        scoreRight += 1;
+    }
+    scoreText.setText('Score: ' + scoreLeft + " - " + scoreRight);
+    ball.destroy();
+    
+    for (var i = 0; i < player1balls.length; i++) {
+        player1balls[i].setX(-10000 + i *80).setVelocity(0,0);
+        player1balls[i].setY(-10000);
+    }
+    for (var i = 0; i < player2balls.length; i++) {
+        player2balls[i].setX(-1000+ i *80).setVelocity(0,0);
+        player2balls[i].setY(-1000);
+    }
+    
+    for (var i = 0; i < player1balls.length; i++) {
+        player1balls[i].setX(xOf1[i]);
+        player1balls[i].setY(yOf1[i]).setVelocity(0,0);
+    }
+    for (var i = 0; i < player2balls.length; i++) {
+        player2balls[i].setX(xOf2[i]);
+        player2balls[i].setY(yOf2[i]).setVelocity(0,0);
+    }
+    ball = thisGame.matter.add.image(600,400, 'football').setBody({type:"circle", radius:20}).setName("ball").setBounce(0.9).setFrictionAir(0.0175);
+
+}
+
+function update () {
+
+    var d = new Date();
+    if(currentEvent >= turnEventsOrder.length){
+        currentEvent = 0;
+    }
+    if (!currentEventStarted) {
+        
+        timerText.emit(turnEventsOrder[currentEvent]);
+        timerTimer = d.getTime() + (turnEventsOrderIsTimed[currentEvent] ? 5000 : 4500);
+        currentEventStarted = true;
+    }
+    if (timerTimer - d.getTime() < 0 ) {
+        currentEvent ++;
+        currentEventStarted = false;
+    }
+
+    timerText.setText(Math.ceil((timerTimer - d.getTime()) / 1000) + " " + turnEventsOrder[ currentEvent]);
+    
+}
+
+function play(ball, player1balls, player2balls, scoreRight, scoreLeft, settings, name){
+    if (settings == "human") {
+        playerNumber =0;
+        angle = 0;
+        speed = 15;
+    } else {
+        playerNumber = 3;
+        angle = 24;
+        speed = 10;
+    }
+    
+    return [playerNumber,angle,speed]
+}
+
+
+
+    </script>
+
+    </body>
+</html>
+
