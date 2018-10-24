@@ -270,10 +270,6 @@ function forcePlay(ball, player1balls, player2balls,name, angleOfHit){
 	return [playerNumber,angle,15]
 }
 
-function radianToDegrees(angle){
-	//console.log("in degrees", angle*180/Math.PI);
-	return angle*180/Math.PI;
-}
 
 function deltasToAngle(deltaX, deltaY){
 	if(deltaX<0){
